@@ -9,7 +9,7 @@ namespace BetterCommandService
         string CommandName { get; }
         string CommandDescription { get; }
         string CommandHelpMessage { get; }
-        char[] Prefixes { get; }
+        string[] Prefixes { get; }
         bool RequiresPermission { get; }
     }
 }

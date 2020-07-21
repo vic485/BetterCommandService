@@ -19,7 +19,7 @@
             If <see langword="true"/> then only the property prefix will work on child commands, if <see langword="false"/> then the assigned prefix AND the prefix on the command are valid. Default is <see langword="true"/>
             </summary>
         </member>
-        <member name="M:BetterCommandService.DiscordCommandClass.#ctor(System.Char)">
+        <member name="M:BetterCommandService.DiscordCommandClass.#ctor(System.String)">
             <summary>
             Tells the command service that this class contains commands.
             </summary>
@@ -66,14 +66,14 @@
             </summary>
             <param name="commandName">the name of the command</param>
         </member>
-        <member name="M:BetterCommandService.DiscordCommand.#ctor(System.String,System.Char)">
+        <member name="M:BetterCommandService.DiscordCommand.#ctor(System.String,System.String)">
             <summary>
             Tells the service that this method is a command
             </summary>
             <param name="commandName">the name of the command</param>
             <param name="Prefix">A prefix to overwrite the default one</param>
         </member>
-        <member name="M:BetterCommandService.DiscordCommand.#ctor(System.String,System.Char[])">
+        <member name="M:BetterCommandService.DiscordCommand.#ctor(System.String,System.String[])">
             <summary>
             Tells the service that this method is a command
             </summary>

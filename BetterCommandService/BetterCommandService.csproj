@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- GeneratePackageOnBuild>true</GeneratePackageOnBuild -->
     <Authors>Quin lynch</Authors>
     <Company>SwissDev</Company>
     <Description>The better and more customizable command service for Discord bots</Description>
@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\plynch\source\repos\BetterCommandService\BetterCommandService\BetterCommandService.xml</DocumentationFile>
+    <!-- DocumentationFile>C:\Users\plynch\source\repos\BetterCommandService\BetterCommandService\BetterCommandService.xml</DocumentationFile -->
     <OutputPath>bin\</OutputPath>
   </PropertyGroup>
 

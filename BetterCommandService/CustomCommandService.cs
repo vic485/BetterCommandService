@@ -20,7 +20,7 @@ namespace BetterCommandService
         /// <summary>
         /// The prefix for all commands in this class.
         /// </summary>
-        public char prefix { get; set; }
+        public string prefix { get; set; }
         /// <summary>
         /// If <see langword="true"/> then only the property prefix will work on child commands, if <see langword="false"/> then the assigned prefix AND the prefix on the command are valid. Default is <see langword="true"/>
         /// </summary>
@@ -29,7 +29,7 @@ namespace BetterCommandService
         /// Tells the command service that this class contains commands.
         /// </summary>
         /// <param name="prefix">Prefix for the whole class, look at <see cref="OverwritesPrefix"/> for more options.</param>
-        public DiscordCommandClass(char prefix)
+        public DiscordCommandClass(string prefix)
         {
             this.prefix = prefix;
             OverwritesPrefix = true;
@@ -57,7 +57,7 @@ namespace BetterCommandService
         /// <summary>
         /// The prefix for the command. This is optional, the command will work with the default prefix you passed or an overwrited one from the <see cref="DiscordCommandClass"/>
         /// </summary>
-        public char[] prefixes { get; set; }
+        public string[] prefixes { get; set; }
         /// <summary>
         /// Description of this command
         /// </summary>
@@ -77,7 +77,7 @@ namespace BetterCommandService
         public DiscordCommand(string commandName)
         {
             this.commandName = commandName;
-            prefixes = new char[] { };
+            prefixes = new string[] { };
             BotCanExecute = false;
         }
         /// <summary>
@@ -85,10 +85,10 @@ namespace BetterCommandService
         /// </summary>
         /// <param name="commandName">the name of the command</param>
         /// <param name="Prefix">A prefix to overwrite the default one</param>
-        public DiscordCommand(string commandName, char Prefix)
+        public DiscordCommand(string commandName, string Prefix)
         {
             this.commandName = commandName;
-            prefixes = new char[] { Prefix };
+            prefixes = new string[] { Prefix };
             BotCanExecute = false;
         }
         /// <summary>
@@ -96,13 +96,13 @@ namespace BetterCommandService
         /// </summary>
         /// <param name="commandName">the name of the command</param>
         /// <param name="Prefixes">The Prefix(es) of the command, if this is empty it will use the default prefix</param>
-        public DiscordCommand(string commandName, params char[] Prefixes)
+        public DiscordCommand(string commandName, params string[] Prefixes)
         {
             this.commandName = commandName;
             if (Prefixes.Length > 0)
                 prefixes = Prefixes;
             else
-                prefixes = new char[] { };
+                prefixes = new string[] { };
             BotCanExecute = false;
         }
     }
@@ -114,7 +114,7 @@ namespace BetterCommandService
         /// <summary>
         /// The Default prefix for the command service
         /// </summary>
-        public char DefaultPrefix { get; set; }
+        public string DefaultPrefix { get; set; }
         /// <summary>
         /// This method will be called and when a command is called and checkes if the user has permission to execute the command, this result will be in the <see cref="CommandModuleBase.HasExecutePermission"/> if you dont set this, the <see cref="CommandModuleBase.HasExecutePermission"/> will always be <see langword="true"/>
         /// </summary>
@@ -138,7 +138,7 @@ namespace BetterCommandService
     /// </summary>
     public class CustomCommandService
     {
-        public List<char> UsedPrefixes { get; internal set; }
+        public List<string> UsedPrefixes { get; internal set; }
 
         public bool ContainsUsedPrefix(string msg)
         {
@@ -150,7 +150,7 @@ namespace BetterCommandService
         {
             public bool RequirePermission { get; set; }
             public string CommandName { get; set; }
-            public char[] Prefixes { get; set; }
+            public string[] Prefixes { get; set; }
             public System.Reflection.ParameterInfo[] Paramaters { get; set; }
             public MethodInfo Method { get; set; }
             public DiscordCommand attribute { get; set; }
@@ -158,7 +158,7 @@ namespace BetterCommandService
         }
         private class CommandClassobj
         {
-            public char Prefix { get; set; }
+            public string Prefix { get; set; }
             public DiscordCommandClass attribute { get; set; }
             public Type type { get; set; }
             public List<Command> ChildCommands { get; set; }
@@ -190,7 +190,7 @@ namespace BetterCommandService
                 CommandMethods.Add(t, t.DeclaringType);
             }
             //add to base command list
-            UsedPrefixes = new List<char>();
+            UsedPrefixes = new List<string>();
             UsedPrefixes.Add(currentSettings.DefaultPrefix);
             foreach (var item in CommandMethods)
             {
@@ -219,7 +219,7 @@ namespace BetterCommandService
                 {
                     CommandName = cmdat.commandName,
                     Method = item.Key,
-                    Prefixes = cmdat.prefixes.Length == 0 ? new char[] { currentSettings.DefaultPrefix } : cmdat.prefixes,
+                    Prefixes = cmdat.prefixes.Length == 0 ? new string[] { currentSettings.DefaultPrefix } : cmdat.prefixes,
                     attribute = cmdat,
                     parent = new CommandClassobj()
                     {
@@ -236,7 +236,7 @@ namespace BetterCommandService
                     CommandName = cmdat.commandName,
                     CommandDescription = cmdat.description == null ? null : cmdat.description.Replace("(PREFIX)", string.Join("|", cmdobj.Prefixes)),
                     CommandHelpMessage = cmdat.commandHelp == null ? null : cmdat.commandHelp.Replace("(PREFIX)", string.Join("|", cmdobj.Prefixes)),
-                    Prefixes = parat.prefix == '\0' ? cmdobj.Prefixes : cmdobj.Prefixes.Append(parat.prefix).ToArray(),
+                    Prefixes = parat.prefix == "\0" ? cmdobj.Prefixes : cmdobj.Prefixes.Append(parat.prefix).ToArray(),
                     RequiresPermission = cmdat.RequiredPermission
                 };
                 CommandModuleBase.Commands.Add(c);
@@ -244,7 +244,7 @@ namespace BetterCommandService
                 foreach (var pr in cmdat.prefixes)
                     if (!UsedPrefixes.Contains(pr))
                         UsedPrefixes.Add(pr);
-                if (!UsedPrefixes.Contains(parat.prefix) && parat.prefix != '\0')
+                if (!UsedPrefixes.Contains(parat.prefix) && parat.prefix != "\0")
                     UsedPrefixes.Add(parat.prefix);
             }
         }
@@ -272,8 +272,9 @@ namespace BetterCommandService
         {
             string[] param = context.Message.Content.Split(' ');
             param = param.TakeLast(param.Length - 1).ToArray();
+            // TODO: This is still expecting char prefix
             string command = context.Message.Content.Split(' ').First().Remove(0, 1).ToLower();
-            char prefix = context.Message.Content.Split(' ').First().ToCharArray().First();
+            //string prefix = context.Message.Content.Split(' ').First().Toa().First();
             //check if the command exists
             if (!CommandList.Any(x => x.CommandName.ToLower() == command))
                 return new CommandResult()
@@ -287,9 +288,11 @@ namespace BetterCommandService
             //if more than one command with the same name exists then try to execute both or find one that matches the params
             var commandobj = CommandList.Where(x => x.CommandName.ToLower() == command);
             foreach (var item in commandobj)
-                if (!item.Prefixes.Contains(prefix)) //prefix doesnt match, check the parent class
+                //if (!item.Prefixes.Contains(prefix)) //prefix doesnt match, check the parent class
+                if (item.Prefixes.Any(command.StartsWith))
                 {
-                    if (item.parent.attribute.prefix == '\0') //if theres no prefix
+                    var prefix = item.Prefixes.FirstOrDefault(command.StartsWith);
+                    if (item.parent.attribute.prefix == "\0") //if theres no prefix
                         return new CommandResult() { Result = CommandStatus.NotFound, IsSuccess = false };
                     else //there is a prefix
                     {
@@ -302,6 +305,7 @@ namespace BetterCommandService
                 }
                 else //prefix match for method
                 {
+                    var prefix = item.Prefixes.FirstOrDefault(command.StartsWith);
                     if (item.parent.attribute.OverwritesPrefix)
                     {
                         if (item.parent.Prefix == prefix)
